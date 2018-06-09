@@ -1,0 +1,102 @@
+---
+
+- name: System | Update hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  tags: init
+
+- name: System | Update repo
+  blockinfile:
+    path: /etc/pacman.d/mirrorlist
+    state: present
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      # Tier 0
+      Server = http://mirror.pkgbuild.com/$repo/os/$arch
+    insertbefore: BOF
+  tags: init
+
+- name: System | Install Arch Linux CN / lilydjwg repo
+  blockinfile:
+    path: /etc/pacman.conf
+    state: present
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      [archlinuxcn]
+      SigLevel = Optional TrustedOnly
+      Server = http://repo.archlinuxcn.org/$arch
+
+      [lilydjwg] 
+      Server = http://lilydjwg.vim-cn.com/repo/$arch
+    insertafter: EOF
+  tags: init
+
+- name: System | Trust Arch Linux CN keys
+  pacman:
+    update_cache: yes
+    name: archlinuxcn-keyring
+    state: latest
+  tags: init
+
+- name: System | Upgrade packages
+  pacman:
+    update_cache: yes
+    upgrade: yes
+  tags: init, update
+
+- name: System | Install dependencies
+  pacman:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ packages }}"
+  tags: init
+
+- name: System | Disable SSH password login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  tags: init
+
+- name: Group | Create pkg group
+  group:
+    name: pkg
+    state: present
+  tags: init
+
+- name: User | Modify sudoers file
+  lineinfile:
+    path: /etc/sudoers
+    line: '%pkg ALL= NOPASSWD: /usr/bin/extra-i686-build, /usr/bin/extra-x86_64-build, /usr/bin/multilib-build, /usr/bin/testing-i686-build, /usr/bin/testing-x86_64-build, /usr/bin/staging-i686-build, /usr/bin/staging-x86_64-build, /usr/bin/archlinuxcn-x86_64-build, /usr/bin/archlinuxcn-i686-build, /usr/bin/multilib-archlinuxcn-build, /usr/bin/multilib-testing-build, /usr/bin/multilib-staging-build'
+    insertafter: EOF
+  tags: init,user
+
+- name: User | Create user accounts
+  user:
+    name: "{{ item.name }}"
+    shell: /bin/zsh
+    append: yes
+    group: users
+    groups: pkg
+    create_home: yes
+  with_items: "{{ users }}"
+  tags: init,user
+
+- name: User | Add .ssh directory
+  file:
+    path: "/home/{{ item.name }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ item.name }}"
+  with_items: "{{ users }}"
+  tags: init,user
+
+- name: User | Install SSH public keys
+  copy:
+    src: "auth_key/{{ item.auth_key_file }}"
+    dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+    owner: "{{ item.name }}"
+    mode: 0600
+  with_items: "{{ users }}"
+  when: item.auth_key_file is defined
+  tags: init,user

@@ -1,0 +1,31 @@
+---
+
+packages:
+  - zsh
+  - mosh
+  - tmux
+  - byobu
+  - htop
+  - iftop
+  - vnstat
+  - iotop
+  - fail2ban
+  - netcat
+  - git
+  - mercurial
+  - subversion
+  - curl
+  - wget
+  - base-devel
+  - devtools
+  - dcron-git
+  - python-pycurl
+  - python-tornado
+  - nvchecker-git
+  - postfix
+  - spamassassin
+
+users:
+  - name: phoenix
+    builder: yes
+    auth_key_file: phoenix_ed25519.pub  

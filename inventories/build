@@ -1,0 +1,6 @@
+[build]
+#a.build.cluster.archlinuxcn.org ansible_host=163.172.20.151
+test.build.cluster.archlinuxcn.org ansible_host=172.105.230.155
+
+[local]
+#127.0.0.1 ansible_python_interpreter=/usr/bin/python2
