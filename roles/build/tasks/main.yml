@@ -100,3 +100,13 @@
   with_items: "{{ users }}"
   when: item.auth_key_file is defined
   tags: init,user
+
+- name: User | Copy users' config
+  copy:
+    src: "user_config/{{ item.user_config_dir }}/" # do not forget the tailing slash
+    dest: "/home/{{ item.name }}/"
+    owner: "{{ item.name }}"
+    group: users
+  with_items: "{{ users }}"
+  when: item.user_config_dir is defined
+  tags: init,user
