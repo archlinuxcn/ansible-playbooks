@@ -58,10 +58,37 @@
     line: 'PasswordAuthentication no'
   tags: init
 
+- name: System | Create data directory
+  file:
+    path: /data
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  tags: init
+
 - name: Group | Create pkg group
   group:
     name: pkg
     state: present
+  tags: init
+
+- name: Group | Create packages directory
+  file:
+    path: /data/packages
+    state: directory
+    owner: root
+    group: pkg
+    mode: 01775
+  tags: init
+
+- name: Group | Create notification file
+  file:
+    path: '/data/packages/Put *.pkg.tar.xz here and it will be fetched and then removed!'
+    state: touch
+    owner: root
+    group: root
+    mode: 0644
   tags: init
 
 - name: User | Modify sudoers file
@@ -110,3 +137,12 @@
   with_items: "{{ users }}"
   when: item.user_config_dir is defined
   tags: init, user
+
+- name: User | Linking packages directory
+  file:
+    path: "/home/{{ item.name }}/packages"
+    src: /data/packages
+    state: link
+  with_items: "{{ users }}"
+  tags: init, user
+
