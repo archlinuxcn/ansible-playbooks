@@ -69,18 +69,18 @@
     path: /etc/sudoers
     line: '%pkg ALL= NOPASSWD: /usr/bin/extra-i686-build, /usr/bin/extra-x86_64-build, /usr/bin/multilib-build, /usr/bin/testing-i686-build, /usr/bin/testing-x86_64-build, /usr/bin/staging-i686-build, /usr/bin/staging-x86_64-build, /usr/bin/archlinuxcn-x86_64-build, /usr/bin/archlinuxcn-i686-build, /usr/bin/multilib-archlinuxcn-build, /usr/bin/multilib-testing-build, /usr/bin/multilib-staging-build'
     insertafter: EOF
-  tags: init,user
+  tags: init, user
 
 - name: User | Create user accounts
   user:
     name: "{{ item.name }}"
-    shell: /bin/zsh
+    shell: /usr/bin/zsh
     append: yes
     group: users
     groups: pkg
     create_home: yes
   with_items: "{{ users }}"
-  tags: init,user
+  tags: init, user
 
 - name: User | Add .ssh directory
   file:
@@ -89,7 +89,7 @@
     mode: 0700
     owner: "{{ item.name }}"
   with_items: "{{ users }}"
-  tags: init,user
+  tags: init, user
 
 - name: User | Install SSH public keys
   copy:
@@ -99,7 +99,7 @@
     mode: 0600
   with_items: "{{ users }}"
   when: item.auth_key_file is defined
-  tags: init,user
+  tags: init, user
 
 - name: User | Copy users' config
   copy:
@@ -109,4 +109,4 @@
     group: users
   with_items: "{{ users }}"
   when: item.user_config_dir is defined
-  tags: init,user
+  tags: init, user
