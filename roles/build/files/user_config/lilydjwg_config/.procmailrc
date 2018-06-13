@@ -1,0 +1,11 @@
+MAILDIR=$HOME/Mail
+DEFAULT=$MAILDIR/inbox
+LOGFILE=$MAILDIR/.procmaillog
+
+:0fw: spamassassin.lock
+* < 256000
+| /usr/bin/vendor_perl/spamassassin
+
+:0:
+* ^X-Spam-Status: Yes
+autospam

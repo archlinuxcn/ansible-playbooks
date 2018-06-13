@@ -24,8 +24,13 @@ packages:
   - nvchecker-git
   - postfix
   - spamassassin
+  - mutt
+  - procmail
 
 users:
   - name: phoenix
     auth_key_file: phoenix_ed25519.pub
     user_config_dir: phoenix_config
+  - name: lilydjwg
+    auth_key_file: lilydjwg_ed25519.pub
+    user_config_dir: lilydjwg_config

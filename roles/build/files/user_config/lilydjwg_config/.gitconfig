@@ -1,0 +1,44 @@
+[user]
+	email = lilac@build.archlinuxcn.org
+	name = lilac
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	grep = auto
+	showbranch = auto
+[core]
+	excludesfile = ~/.gitconfig.d/gitignore
+	quotepath = false
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	qm = merge --no-ff --no-edit
+	tree = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %Cgreen%an%Creset: %s %Cblue(%ad)%Creset'
+	xtree = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %Cgreen%an%Creset: %s %Cblue(%ar)%Creset'
+	reftree = reflog --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %Cgreen%gn%Creset: %gs %Cblue(%gd)%Creset' --date=iso
+        refxtree = reflog --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %Cgreen%gn%Creset: %gs %Cblue(%gd)%Creset' --date=relative
+	unstage = reset HEAD --
+	last = log -1 --stat
+	bi = bisect
+	sb = show-branch
+        diffw = diff --word-diff=color
+	# show branch using `less` as pager
+	sbc = !git show-branch --color=always|less -RXF
+	sbca = !git show-branch -a --color=always|less -RXF
+	graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format: %h -> { %p };' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/Git&/g'; git log --pretty='format: Git%h[label=ASDF%sASDF,shape=box];' | sed -e 's/\"/\\\\\"/g' -e 's/ASDF/\"/g' ; echo '}'; }; f"
+        datehist = !git log --format='%at' | datehist -t "$(basename "$PWD")"
+[log]
+	date = iso
+[merge]
+	tool = vimdiff
+[push]
+	default = simple
+[mergetool]
+	keepBackup = false
+[difftool]
+	prompt = false
+[diff]
+	wordRegex = \\w+|\\S

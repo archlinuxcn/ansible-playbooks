@@ -1,0 +1,40 @@
+# set {{{1
+# 基本设置 {{{2
+set markers=no
+set folder="~/Mail"
+set spoolfile=~/Mail/inbox
+set edit_headers=yes
+# color {{{1
+# Ubuntu 默认{{{2
+color normal	 white black
+color attachment brightyellow black
+color hdrdefault cyan black
+color indicator  black cyan
+color markers	 brightred black
+color quoted	 green black
+color signature  cyan black
+color status	 brightgreen blue
+color tilde	 blue black
+color tree	 red black
+# 我的设置{{{2
+color markers brightblack black
+color index yellow black ~p              # 发给我的，黄色
+color index blue black ~P                # 我发的，蓝色
+color index brightyellow black ~U        # 新的，黄色粗体
+color index brightgreen black "~U ~p"    # 新发给我的，绿色粗体
+color index brightblack black ~D         # 标记为删除的
+color header green black       "^Message-ID"
+
+# modified from mail 20130821151203.GE18239@homerow
+# URLs
+color body blue black "(https?|ftp|news|telnet|finger)://[^] \"\t\r\n>*。，\`)]*"
+color body blue black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+mono  body bold       "(https?|ftp|news|telnet|finger)://[^] \"\t\r\n>*。，\`)]*"
+mono  body bold       "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+# email addresses
+color body blue black "[-a-z_0-9.%$+]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+mono  body bold       "[-a-z_0-9.%$+]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+
+# Vim modeline{{{1
+# vim:fdm=marker

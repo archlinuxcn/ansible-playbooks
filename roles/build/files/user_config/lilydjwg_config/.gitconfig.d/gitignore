@@ -1,0 +1,27 @@
+# vim: se ft=conf:
+*~
+*.o
+*.h.gch
+*.swp
+*.pyc
+*.pyo
+*.orig
+*.class
+*.zwc
+Thumbs.db
+cscope.in.out
+cscope.out
+cscope.po.out
+.svn/
+.hgignore
+.hgtags
+.hg/
+build/
+dist/
+__pycache__/
+*.egg-info/
+venv/
+node_modules/
+# local configurations
+.cargo/
+target/
