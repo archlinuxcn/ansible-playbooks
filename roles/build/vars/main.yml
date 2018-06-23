@@ -26,6 +26,7 @@ packages:
   - spamassassin
   - mutt
   - procmail
+  - stow
 
 users:
   - name: phoenix
@@ -34,3 +35,6 @@ users:
   - name: lilydjwg
     auth_key_file: lilydjwg_ed25519.pub
     user_config_dir: lilydjwg_config
+  - name: farseerfc
+    auth_key_file: farseerfc_rsa.pub
+    user_config_dir: farseerfc_config
