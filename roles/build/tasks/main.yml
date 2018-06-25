@@ -51,6 +51,13 @@
   with_items: "{{ packages }}"
   tags: init
 
+- name: System | Install stat dependencies
+  pacman:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ stat_packages }}"
+  tags: init, stat
+
 - name: System | Disable SSH password login
   lineinfile:
     path: /etc/ssh/sshd_config

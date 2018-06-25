@@ -28,6 +28,11 @@ packages:
   - procmail
   - archrepo2-git
 
+stat_packages:
+  - grafana
+  - collectd
+  - python2-carbon
+
 users:
   - name: phoenix
     auth_key_file: phoenix_ed25519.pub
