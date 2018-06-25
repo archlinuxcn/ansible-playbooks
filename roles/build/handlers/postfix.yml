@@ -1,0 +1,11 @@
+- name: reload postfix
+  service:
+    name: postfix
+    state: reloaded
+
+- name: update aliases
+  shell: postalias aliases
+  args:
+    chdir: /etc/postfix
+  notify:
+    - reload postfix

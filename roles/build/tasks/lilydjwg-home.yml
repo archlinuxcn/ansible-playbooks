@@ -1,0 +1,24 @@
+- name: lilydjwg | zsh config
+  git:
+    repo: https://github.com/lilydjwg/dotzsh.git
+    dest: ~/.zsh
+
+- name: lilydjwg | zshrc
+  file:
+    src: .zsh/zshrc
+    dest: ~/.zshrc
+    state: link
+
+- name: lilydjwg | zshrc.local
+  shell: mv zshrc.local .zsh
+  args:
+    removes: zshrc.local
+
+- name: lilydjwg | vim config
+  git:
+    repo: https://github.com/lilydjwg/dotvim.git
+    dest: ~/.vim
+
+- name: lilydjwg | sa-update
+  shell: sa-update
+  tags: postfix

@@ -1,0 +1,39 @@
+- name: Postfix | Add aliases
+  lineinfile:
+    path: /etc/postfix/aliases
+    line: 'lilac:          lilydjwg'
+    insertafter: EOF
+  notify:
+    - update aliases
+
+- name: Postfix | main.cf | myhostname
+  lineinfile:
+    path: /etc/postfix/main.cf
+    line: myhostname = {{ inventory_hostname }}
+    regexp: '^#?\s*myhostname\s*='
+  notify:
+    - reload postfix
+
+- name: Postfix | main.cf | mydomain
+  lineinfile:
+    path: /etc/postfix/main.cf
+    line: mydomain = {{ inventory_hostname }}
+    regexp: '^#?\s*mydomain\s*='
+  notify:
+    - reload postfix
+
+- name: Postfix | main.cf | smtpd_sender_restrictions
+  lineinfile:
+    path: /etc/postfix/main.cf
+    line: smtpd_sender_restrictions = permit_mynetworks, reject_non_fqdn_sender, reject_unknown_sender_domain, permit
+    regexp: '^#?\s*smtpd_sender_restrictions\s*='
+    insertafter: EOF
+  notify:
+    - reload postfix
+
+- name: Postfix | service
+  service:
+    name: postfix
+    enabled: yes
+    state: started
+
