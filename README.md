@@ -3,7 +3,8 @@ Ansible Playbooks for Arch Linux CN Servers
 
 ## Dependencies
 
-* `ansible`
+* `ansible` (local)
+* `python` (remote)
 
 ## ATTENTION
 
