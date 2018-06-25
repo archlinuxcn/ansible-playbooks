@@ -22,3 +22,14 @@
 - name: lilydjwg | sa-update
   shell: sa-update
   tags: postfix
+
+- name: lilydjwg | lilac
+  git:
+    repo: https://github.com/archlinuxcn/lilac.git
+    dest: ~/soft/lilac
+
+- name: lilydjwg | archlinuxcn/repo
+  git:
+    repo: https://github.com/archlinuxcn/repo.git
+    dest: ~/archgitrepo
+
