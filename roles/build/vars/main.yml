@@ -26,6 +26,7 @@ packages:
   - spamassassin
   - mutt
   - procmail
+  - archrepo2-git
 
 users:
   - name: phoenix
