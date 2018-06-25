@@ -25,9 +25,6 @@
       [archlinuxcn]
       SigLevel = Optional TrustedOnly
       Server = http://repo.archlinuxcn.org/$arch
-
-      [lilydjwg] 
-      Server = http://lilydjwg.vim-cn.com/repo/$arch
     insertafter: EOF
   tags: init
 
