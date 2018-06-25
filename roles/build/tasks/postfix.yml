@@ -37,3 +37,6 @@
     enabled: yes
     state: started
 
+- name: postfix | sa-update
+  shell: /usr/bin/vendor_perl/sa-update
+

@@ -19,10 +19,6 @@
     repo: https://github.com/lilydjwg/dotvim.git
     dest: ~/.vim
 
-- name: lilydjwg | sa-update
-  shell: sa-update
-  tags: postfix
-
 - name: lilydjwg | lilac
   git:
     repo: https://github.com/archlinuxcn/lilac.git
