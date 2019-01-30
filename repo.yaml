@@ -1,0 +1,6 @@
+- hosts:
+  - repo
+  roles:
+  - repo
+  vars_files:
+  - secrets.yml

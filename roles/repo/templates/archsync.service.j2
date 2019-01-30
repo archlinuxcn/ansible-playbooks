@@ -1,0 +1,12 @@
+[Unit]
+Description=rsync for archlinuxcn repo
+
+[Service]
+Type=simple
+Environment=REPO_SECRET={{ repo_secret }} RSYNC_PASSWORD={{ rsync_password }}
+User=repo
+ExecStart=/usr/local/bin/on_update_notification -p9900 -t 600 /usr/local/bin/sync_repo
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

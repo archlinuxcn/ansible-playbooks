@@ -1,2 +1,8 @@
 *.retry
 !build/
+
+roles/repo/files/rsyncd.secrets
+secrets.yml
+id_ed25519
+id_rsa
+id_ecdsa

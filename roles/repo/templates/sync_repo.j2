@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+
+import os, sys
+import fcntl
+import subprocess
+import concurrent.futures
+import shlex
+
+def lock_file(path):
+  lock = os.open(path, os.O_WRONLY | os.O_CREAT, 0o600)
+  try:
+    fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)
+  except BlockingIOError:
+    sys.exit('cannot acquire lock')
+
+def rsync():
+  cmd = ['rsync', '-rtlivHh', '--delete-after', '--delay-updates', '--safe-links', '--max-delete=1000', '--timeout=60', '--contimeout=60', 'archlinuxcn@internal.repo.archlinuxcn.org::archlinuxcn/', '/data/repo']
+
+  p = subprocess.Popen(cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  count = 0
+  counting = False
+  for l in p.stdout:
+    l = l.rstrip()
+    if not l:
+      continue
+
+    print(l, flush=True)
+
+    if l.startswith('sent '):
+      counting = False
+
+    if counting:
+      count += 1
+
+    if l.startswith('receiving file list'):
+      counting = True
+
+  st = p.wait()
+  if st != 0:
+    raise subprocess.CalledProcessError(st, cmd)
+
+  return count
+
+CMDS = [
+  {% for cmd in downstream_notifiers %}
+  '''{{ cmd }}''',
+  {% endfor %}
+]
+EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=len(CMDS))
+
+def downstream_sync():
+  print('notifying downstreams...', flush=True)
+  for cmd in CMDS:
+    cmd = shlex.split(cmd)
+    EXECUTOR.submit(subprocess.run, cmd, timeout=30)
+
+def main():
+  lock_file('/tmp/.repo-syncing')
+  if rsync():
+    downstream_sync()
+
+if __name__ == '__main__':
+  main()

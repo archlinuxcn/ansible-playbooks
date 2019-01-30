@@ -1,0 +1,16 @@
+[repo]
+comment = Arch Linux CN Repository
+path = /data/repo
+read only = yes
+list = yes
+uid = http
+gid = http
+timeout = 600
+use chroot = yes
+auth users = {{ rsync_users }}
+secrets file = /etc/rsyncd.secrets
+strict modes = yes
+ignore nonreadable = yes
+dont compress = *.gz *.tgz *.zip *.z *.rpm *.deb *.iso *.bz2 *.tbz *.xs *.xz
+
+# vim: set ft=dosini:

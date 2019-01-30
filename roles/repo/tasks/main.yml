@@ -1,0 +1,132 @@
+- name: System | Upgrade packages
+  pacman:
+    update_cache: yes
+    upgrade: yes
+
+- name: System | Install dependencies
+  pacman:
+    name:
+      - nginx
+      - rsync
+    state: latest
+
+- name: System | Install basic tools
+  pacman:
+    name:
+      - vim
+      - htop
+      - zsh
+      - tmux
+    state: latest
+
+- name: System | Create the repo account
+  user:
+    name: repo
+    shell: /bin/sh
+    append: yes
+    create_home: yes
+
+- name: System | Create repo directory
+  file:
+    path: /data/repo
+    state: directory
+    owner: repo
+    group: repo
+
+- name: Service | rsyncd config
+  template:
+    src: rsyncd.conf.j2
+    dest: /etc/rsyncd.conf
+
+- name: Service | rsyncd secrets
+  copy:
+    src: rsyncd.secrets
+    dest: /etc/rsyncd.secrets
+    mode: 0600
+
+- name: Service | rsyncd
+  systemd:
+    name: rsyncd
+    enabled: yes
+    state: started
+
+- name: Service | archsync | on_update_notification dep
+  get_url:
+    url: https://github.com/lilydjwg/archrepo2/raw/master/scripts/on_update_notification
+    dest: /usr/local/bin/on_update_notification
+    force: yes
+    mode: 0755
+  notify: restart archsync
+
+- name: Service | archsync | nicelogger dep
+  get_url:
+    url: https://github.com/lilydjwg/winterpy/raw/master/pylib/nicelogger.py
+    dest: /usr/local/bin/nicelogger.py
+    force: yes
+    mode: 0644
+  notify: restart archsync
+
+- name: Service | archsync | executable
+  template:
+    src: sync_repo.j2
+    dest: /usr/local/bin/sync_repo
+    mode: 0755
+  notify: restart archsync
+
+- name: Service | archsync | service file
+  template:
+    src: archsync.service.j2
+    dest: /etc/systemd/system/archsync.service
+  notify:
+    - systemd daemon-reload
+    - restart archsync
+
+- name: Service | archsync | ssh dir
+  file:
+    path: /home/repo/.ssh
+    state: directory
+    mode: 0700
+    owner: repo
+    group: repo
+
+- name: Service | archsync | ssh files
+  copy:
+    src: repo-user/{{ item }}
+    dest: /home/repo/.ssh/{{ item }}
+    mode: 0600
+    owner: repo
+    group: repo
+  with_items:
+    - known_hosts
+    - id_ed25519
+    - id_ed25519.pub
+
+- name: Service | archsync
+  systemd:
+    name: archsync
+    enabled: yes
+    state: started
+
+- name: Service | nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+
+- name: Service | nginx | main conf
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    line: '    include /etc/nginx/sites-enabled/*.conf;'
+    insertbefore: '^}'
+  notify: reload nginx
+
+- name: Service | nginx | site dir
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+
+- name: Service | nginx | repo site
+  copy:
+    src: nginx-repo.conf
+    dest: /etc/nginx/sites-enabled/repo.conf
+  notify: reload nginx
