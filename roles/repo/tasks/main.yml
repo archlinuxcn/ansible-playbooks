@@ -8,6 +8,7 @@
     name:
       - nginx
       - rsync
+      - vnstat
     state: latest
 
 - name: System | Install basic tools
@@ -17,6 +18,7 @@
       - htop
       - zsh
       - tmux
+      - git
     state: latest
 
 - name: System | Create the repo account
@@ -47,6 +49,12 @@
 - name: Service | rsyncd
   systemd:
     name: rsyncd
+    enabled: yes
+    state: started
+
+- name: Service | vnstat
+  systemd:
+    name: vnstat
     enabled: yes
     state: started
 
