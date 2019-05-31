@@ -1,0 +1,10 @@
+[Unit]
+Description=renew cert weekly
+
+[Timer]
+OnCalendar=weekly
+AccuracySec=1d
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target

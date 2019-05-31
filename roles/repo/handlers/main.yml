@@ -10,3 +10,11 @@
   systemd:
     name: archsync
     state: restarted
+
+- name: reload sysctl
+  shell: sysctl -p /etc/sysctl.d/*.conf
+
+- name: restart certbot-renew.timer
+  systemd:
+    name: certbot-renew.timer
+    state: restarted

@@ -138,3 +138,31 @@
     src: nginx-repo.conf
     dest: /etc/nginx/sites-enabled/repo.conf
   notify: reload nginx
+
+- name: System | sysctl
+  copy:
+    src: sysctl-tcp.conf
+    dest: /etc/sysctl.d/10-tcp.conf
+  notify: reload sysctl
+
+- name: Service | certbot | service file
+  copy:
+    src: certbot-renew.service
+    dest: /etc/systemd/system/certbot-renew.service
+  notify:
+    - systemd daemon-reload
+
+- name: Service | certbot | timer file
+  copy:
+    src: certbot-renew.timer
+    dest: /etc/systemd/system/certbot-renew.timer
+  notify:
+    - systemd daemon-reload
+    - restart certbot-renew.timer
+
+- name: Service | certbot
+  systemd:
+    name: certbot-renew.timer
+    enabled: yes
+    state: started
+
