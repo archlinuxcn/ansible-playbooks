@@ -6,6 +6,8 @@ import subprocess
 import concurrent.futures
 import shlex
 
+REPO_DIR = '/data/repo'
+
 def lock_file(path):
   lock = os.open(path, os.O_WRONLY | os.O_CREAT, 0o600)
   try:
@@ -13,8 +15,21 @@ def lock_file(path):
   except BlockingIOError:
     sys.exit('cannot acquire lock')
 
+def cleanup_tmp():
+  '''clean up */.~tmp~/ directories
+
+  For whatever reasons, rsync may complain "failed verification" for
+  "*.files.tar.gz{,.old}" and leave this directory around in year 2020
+  (rsync 3.2.3), causing issues on updating them.
+  '''
+
+  subprocess.call(
+    'rm -rf "%s/"*"/.~tmp~/"' % REPO_DIR,
+    shell = True,
+  )
+
 def rsync():
-  cmd = ['rsync', '-rtlivHh', '--delete-after', '--delay-updates', '--safe-links', '--max-delete=1000', '--timeout=60', '--contimeout=60', 'archlinuxcn@internal.repo.archlinuxcn.org::archlinuxcn/', '/data/repo']
+  cmd = ['rsync', '-rtlivHh', '--delete-after', '--delay-updates', '--safe-links', '--max-delete=1000', '--timeout=60', '--contimeout=60', 'archlinuxcn@internal.repo.archlinuxcn.org::archlinuxcn/', REPO_DIR]
 
   p = subprocess.Popen(cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   count = 0
@@ -57,6 +72,7 @@ def downstream_sync():
 def main():
   lock_file('/tmp/.repo-syncing')
   if rsync():
+    cleanup_tmp()
     downstream_sync()
 
 if __name__ == '__main__':
